@@ -107,77 +107,51 @@ async function createTemplate(args: CreateTemplateType) {
     return;
   }
 
-  vscode.window.withProgress(
-    {
-      location: vscode.ProgressLocation.Notification,
-      cancellable: false,
-      title: "Avalonia UI Templates",
-    },
-    (progress, token) => {
-      return new Promise<void>((resolve, reject) => {
-        const projectPath = vscode.workspace.workspaceFolders?.[0].uri.fsPath ?? "";
-        let createPath = (args.fsPath as string) ?? projectPath;
-        if (!createPath) {
-          vscode.window.showErrorMessage("Can't create template 🥲");
-          reject();
-          return;
-        }
+  const projectPath = vscode.workspace.workspaceFolders?.[0].uri.fsPath ?? "";
+  let createPath = (args.fsPath as string) ?? projectPath;
+  if (!createPath) {
+    vscode.window.showErrorMessage("Can't create template 🥲");
+    return;
+  }
 
-        progress.report({
-          message: "Creating your template",
-          increment: 30,
-        });
+  const command = `dotnet new avalonia.${
+    type.toLowerCase() === "ResourceDictionary".toLowerCase() ? "resource" : type.toLowerCase()
+  } --name ${fileName}`;
 
-        const command = `dotnet new avalonia.${
-          type.toLowerCase() === "ResourceDictionary".toLowerCase() ? "resource" : type.toLowerCase()
-        } --name ${fileName}`;
-
-        childProcess.exec(command, { cwd: createPath }, (error) => {
-          if (error) {
-            vscode.window.showErrorMessage(`Error creating file: ${error.message}`);
-            reject();
-            return;
-          }
-
-          progress.report({
-            message: "Changing namespaces",
-            increment: 60,
-          });
-
-          switch (args.templateType) {
-            case TemplateType.Window:
-            case TemplateType.UserControl:
-            case TemplateType.TemplatedControl: {
-              changeNamespace({
-                templateType: args.templateType,
-                createPath: createPath,
-                projectPath: projectPath,
-                fileName: fileName,
-                frontendModifiedStartContent:
-                  args.templateType === TemplateType.TemplatedControl ? `xmlns:controls="using:` : `x:Class="`,
-                frontendModifiedEndContent: args.templateType === TemplateType.TemplatedControl ? `">` : `"`,
-                backendModifiedStartContent: `namespace `,
-                backendModifiedEndContent: `;`,
-              });
-
-              break;
-            }
-
-            case TemplateType.Styles:
-            case TemplateType.ResourceDictionary: {
-              break;
-            }
-          }
-        });
-
-        progress.report({
-          message: `${type} created successfully 😎`,
-          increment: 100,
-        });
-        resolve();
-      });
+  childProcess.exec(command, { cwd: createPath }, async (error) => {
+    if (error) {
+      vscode.window.showErrorMessage(`Error creating file: ${error.message}`);
+      return;
     }
-  );
+
+    switch (args.templateType) {
+      case TemplateType.Window:
+      case TemplateType.UserControl:
+      case TemplateType.TemplatedControl: {
+        changeNamespace({
+          templateType: args.templateType,
+          createPath: createPath,
+          projectPath: projectPath,
+          fileName: fileName,
+          frontendModifiedStartContent:
+            args.templateType === TemplateType.TemplatedControl ? `xmlns:controls="using:` : `x:Class="`,
+          frontendModifiedEndContent: args.templateType === TemplateType.TemplatedControl ? `">` : `"`,
+          backendModifiedStartContent: `namespace `,
+          backendModifiedEndContent: `;`,
+        });
+
+        break;
+      }
+
+      case TemplateType.Styles:
+      case TemplateType.ResourceDictionary: {
+        await openTextDocument(path.join(createPath, `${fileName}.axaml`));
+        break;
+      }
+    }
+
+    vscode.window.showInformationMessage("Your template created successfully 😎");
+  });
 }
 
 type ChangeNamespaceType = {
@@ -191,7 +165,7 @@ type ChangeNamespaceType = {
   backendModifiedEndContent: string;
 };
 
-async function changeNamespace(args: ChangeNamespaceType) {
+function changeNamespace(args: ChangeNamespaceType) {
   const slnDir = findSolutionFile(args.createPath, args.projectPath);
   if (!slnDir) {
     throw new Error("Solution not found.");
@@ -207,7 +181,7 @@ async function changeNamespace(args: ChangeNamespaceType) {
   const backendFilePath = path.join(args.createPath, `${args.fileName}.axaml.cs`);
 
   // Edit namespace in .axaml file
-  await fs.readFile(frontendFilePath, "utf-8", async (readError, data) => {
+  fs.readFile(frontendFilePath, "utf-8", (readError, data) => {
     if (readError) {
       vscode.window.showErrorMessage(`Error reading file: ${readError.message}`);
 
@@ -223,16 +197,18 @@ async function changeNamespace(args: ChangeNamespaceType) {
       (args.templateType === TemplateType.TemplatedControl ? shortNamespace : longNamespace) +
       data.substring(modifiedEndIndex);
 
-    await fs.writeFile(frontendFilePath, modifiedData, (writeError) => {
+    fs.writeFile(frontendFilePath, modifiedData, async (writeError) => {
       if (writeError) {
         vscode.window.showErrorMessage(`Error writing file: ${writeError.message}`);
         return;
       }
+
+      await openTextDocument(frontendFilePath);
     });
   });
 
   // Edit namespace in .axaml.cs file
-  await fs.readFile(backendFilePath, "utf-8", async (readError, data) => {
+  fs.readFile(backendFilePath, "utf-8", (readError, data) => {
     if (readError) {
       vscode.window.showErrorMessage(`Error reading file: ${readError.message}`);
       return;
@@ -243,7 +219,7 @@ async function changeNamespace(args: ChangeNamespaceType) {
 
     const modifiedData = data.substring(0, modifiedStartIndex) + shortNamespace + data.substring(modifiedEndIndex);
 
-    await fs.writeFile(backendFilePath, modifiedData, (writeError) => {
+    fs.writeFile(backendFilePath, modifiedData, (writeError) => {
       if (writeError) {
         vscode.window.showErrorMessage(`Error writing file: ${writeError.message}`);
         return;
@@ -273,4 +249,9 @@ function findSolutionFile(startDir: string, rootDir: string) {
   }
 
   return null; // Return null if no .sln file is found
+}
+
+async function openTextDocument(filePath: string) {
+  const document = await vscode.workspace.openTextDocument(filePath);
+  await vscode.window.showTextDocument(document);
 }
