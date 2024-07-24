@@ -1,15 +1,34 @@
 {
   "name": "avalonia-templates",
   "displayName": "Avalonia Templates",
-  "description": "",
+  "description": "Avalonia UI Templates for visual studio code",
   "version": "0.0.1",
+  "icon": "./assets/icon.png",
+  "publisher": "ADdy2142",
+  "license": "MIT",
   "engines": {
     "vscode": "^1.91.0"
   },
   "categories": [
-    "Other"
+    "Programming Languages"
   ],
-  "activationEvents": [],
+  "keywords": [
+    "Avalonia",
+    "Avalonia UI",
+    "Avalonia Templates",
+    "Avalonia UI Templates"
+  ],
+  "bugs": {
+    "url": "https://github.com/ADdy2142/Avalonia-Templates-VS-Extenion/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ADdy2142/Avalonia-Templates-VS-Extenion"
+  },
+  "activationEvents": [
+    "workspaceContains:**/*.axaml",
+    "onLanguage:axaml"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
@@ -43,7 +62,7 @@
       "explorer/context": [
         {
           "submenu": "avalonia-templates.submenu",
-          "group": "avalonia-templates"
+          "group": "z_commands"
         }
       ],
       "avalonia-templates.submenu": [
@@ -67,7 +86,8 @@
     "submenus": [
       {
         "id": "avalonia-templates.submenu",
-        "label": "Avalonia Templates"
+        "label": "Avalonia Templates",
+        "icon": "./assets/icon.png"
       }
     ]
   },
