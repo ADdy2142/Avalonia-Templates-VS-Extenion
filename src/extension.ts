@@ -203,7 +203,7 @@ function changeNamespace(args: ChangeNamespaceType) {
   // Example: We have MainWindow.axaml and MainWindow.axaml.cs
   // The namespace for the first file must end with MainWindow
   // But the namespace for the second file should not end with MainWindow
-  const shortNamespace = namespace.substring(0, namespace.lastIndexOf(".") - 1);
+  const shortNamespace = namespace.substring(0, namespace.lastIndexOf("."));
 
   // Finding .axaml and .axaml.cs file path
   const frontendFilePath = path.join(args.createPath, `${args.fileName}.axaml`);
