@@ -12,8 +12,8 @@ You can choose from the templates below:
 - Styles
 - ResourceDictionary
 
-Just right-click on a folder in Explorer and select your template from the Avalonia Templates menu.  
-Or you can search for the Avalonia UI Templates command in the Command Palette.  
+Just right-click on a folder in 'Explorer' and select your template from the 'New Avalonia Template' menu.  
+Or you can search for the 'Avalonia UI Template' command in the Command Palette.  
 Whichever way you prefer.
 
 **Enjoy!**

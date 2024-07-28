@@ -35,34 +35,34 @@
       {
         "command": "avalonia-templates.createWindow",
         "title": "Window",
-        "category": "Avalonia UI Templates"
+        "category": "Avalonia UI Template"
       },
       {
         "command": "avalonia-templates.createUserControl",
         "title": "UserControl",
-        "category": "Avalonia UI Templates"
+        "category": "Avalonia UI Template"
       },
       {
         "command": "avalonia-templates.createTemplatedControl",
         "title": "TemplatedControl",
-        "category": "Avalonia UI Templates"
+        "category": "Avalonia UI Template"
       },
       {
         "command": "avalonia-templates.createStyles",
         "title": "Styles",
-        "category": "Avalonia UI Templates"
+        "category": "Avalonia UI Template"
       },
       {
         "command": "avalonia-templates.createResourceDictionary",
         "title": "ResourceDictionary",
-        "category": "Avalonia UI Templates"
+        "category": "Avalonia UI Template"
       }
     ],
     "menus": {
       "explorer/context": [
         {
           "submenu": "avalonia-templates.submenu",
-          "group": "z_commands"
+          "group": "navigation"
         }
       ],
       "avalonia-templates.submenu": [
@@ -86,7 +86,7 @@
     "submenus": [
       {
         "id": "avalonia-templates.submenu",
-        "label": "Avalonia Templates",
+        "label": "New Avalonia Template",
         "icon": "./assets/icon.png"
       }
     ]
