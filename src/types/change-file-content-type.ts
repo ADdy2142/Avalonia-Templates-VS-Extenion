@@ -5,10 +5,10 @@ type ChangeFileContentType = {
   startContent: string;
   endContent: string;
   templateType: TemplateType;
-  namespace: string;
-  shortNamespace: string;
+  xamlNameSpace: string;
+  csharpNameSpace: string;
   openFile: boolean;
-  isBackendFile: boolean;
+  isCSharpFile: boolean;
 };
 
 export { ChangeFileContentType };
