@@ -4,7 +4,7 @@
   "description": "Avalonia UI Templates for Visual Studio Code",
   "version": "1.0.0",
   "icon": "./assets/icon.png",
-  "publisher": "Adel Bakhshi",
+  "publisher": "ADdy2142",
   "license": "AGPL-3.0-only",
   "engines": {
     "vscode": "^1.91.0"
