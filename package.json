@@ -2,7 +2,7 @@
   "name": "avalonia-templates",
   "displayName": "Avalonia Templates",
   "description": "Avalonia UI Templates for Visual Studio Code",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "icon": "./assets/icon.png",
   "publisher": "ADdy2142",
   "license": "AGPL-3.0-only",
